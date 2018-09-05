@@ -8,7 +8,7 @@ class TodoList extends Component {
         super(props);
 
         this.state = {
-            task: ""
+            task: ''
         }; 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);       
@@ -20,6 +20,9 @@ class TodoList extends Component {
             type: 'ADD_TODO',
             task: this.state.task
         });
+        this.setState({
+            [e.target.name]: ''
+        });
         e.target.reset();
     }
 
@@ -29,9 +32,15 @@ class TodoList extends Component {
         });
     }
 
-    render() {
+    removeTodo(id) {
+        this.props.dispatch({
+            type: 'REMOVE_TODO',
+            id
+        });
+    }
 
-        let todos = this.props.todos.map((value, index) => <Todo task={value} key={index} />);
+    render() {
+        let todos = this.props.todos.map((value, index) => <Todo task={value.task} key={index} removeTodo={this.removeTodo.bind(this, value.id)} />);
         return (
         <div>
             <form onSubmit={this.handleSubmit} >
@@ -46,9 +55,10 @@ class TodoList extends Component {
 }
 
 function mapStateToProps(reduxState) {
-    todos: { 
-        reduxState.todos 
+    debugger
+    return { 
+        todos: reduxState.todos 
     };
 }
 
-export default connect()(TodoList);
+export default connect(mapStateToProps)(TodoList);
